@@ -22,28 +22,32 @@ export default class Card extends Component {
     render() {
         return (
             <table style={divStyle}>
-                <tr>
-                    <td>
-                        <p>{this.props.name}</p>
-                    </td>
-                    <td>
-                        <p>CMC: {this.props.cmc}</p>
-                    </td>
-                    <td style={{textAlign: 'left', width: '10%'}}>
-                        <p>USD foil: {(this.props.prices != null && this.props.prices.usd_foil != null) ? this.props.prices.usd_foil : ''}</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td style={{width: '33%'}}>
-                        <img src={this.state.imgToUse} alt='' style={imgStyle} />
-                    </td>
-                    <td style={{textAlign: 'left'}}>
-                        <p>Oracle Text:</p>
-                        <p>{this.props.oracle_text}</p>
-                        <p>Flavor:</p>
-                        <p>{this.props.flavor_text}</p>
-                    </td>
-                </tr>
+                <thead>
+                    <tr>
+                        <th>{this.props.name}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <p>CMC: {this.props.cmc}</p>
+                            <p>USD foil: {(this.props.prices != null && this.props.prices.usd_foil != null) ? this.props.prices.usd_foil : ''}</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style={{ textAlign: 'left' }}>
+                            <p>Oracle Text:</p>
+                            <p>{this.props.oracle_text}</p>
+                            <p>Flavor:</p>
+                            <p>{this.props.flavor_text}</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style={{ width: '350px' }}>
+                            <img src={this.state.imgToUse} alt='' style={imgStyle} />
+                        </td>
+                    </tr>
+                </tbody>
             </table>
         )
     }

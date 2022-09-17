@@ -12,7 +12,7 @@ export default class CardSearch extends Component {
             cardData: null,
             color: props.color,
             power: props.power,
-            toughness: null
+            toughness: props.toughness
         }
         this.search = this.search.bind(this);
         this.colorChanged = this.colorChanged.bind(this);
@@ -54,7 +54,7 @@ export default class CardSearch extends Component {
             query += (hasOthers ? '+' : '') + 'pow' + encodeURIComponent(this.state.power) // might want to use drop-down box for equality comparison
             hasOthers = true
         }
-        if (this.state.toughness !== '') {
+        if (this.state.toughness !== '' && this.state.toughness != null) {
             query += (hasOthers ? '+' : '') + 'tou' + encodeURIComponent(this.state.toughness) // might want to use drop-down box for equality comparison
             hasOthers = true
         }
@@ -69,7 +69,8 @@ export default class CardSearch extends Component {
                 this.setState({
                     cardData: data.data,
                     color: this.state.color,
-                    power: this.state.power
+                    power: this.state.power,
+                    toughness: this.state.toughness
                 })
             })
     }
