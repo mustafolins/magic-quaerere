@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Card from './Card';
 
-const liStyle = {
+const divStyle = {
     padding: '2px'
 }
 
@@ -59,7 +59,10 @@ export default class CardSearch extends Component {
             hasOthers = true
         }
         console.log(query)
-        fetch(query)
+        fetch(query, 
+            {
+                method: 'GET'
+            })
             .then(response => {
                 return response.json();
             })
@@ -85,10 +88,10 @@ export default class CardSearch extends Component {
 
                 <ul>
                     {(this.state.cardData == null) ? '' : this.state.cardData.map((card) => (
-                        <li key={card.id} style={liStyle}>
+                        <div key={card.id} style={divStyle}>
                             <Card name={card.name} oracle_text={card.oracle_text} flavor_text={card.flavor_text} image_uris={card.image_uris}
                             cmc={card.cmc} color_identity={card.color_identity} legalities={card.legalities} prices={card.prices} />
-                        </li>
+                        </div>
                     ))}
                 </ul>
             </div>
