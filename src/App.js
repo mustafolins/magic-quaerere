@@ -5,7 +5,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <CardSearch color='red' power='>3' />
+        <CardSearch color={['r']} power='>3' />
       </header>
     </div>
   );
