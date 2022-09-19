@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import Card from './Card';
 import ColorSelector, { colors } from './ColorSelector';
 import IntegerComparisonSelector from './IntegerComparisonSelector';
+import SearchInput from './SearchInput';
 
 const divStyle = {
     padding: '2px'
@@ -19,52 +20,54 @@ export default class CardSearch extends Component {
             cardData: null,
             color: props.color,
             power: props.power,
-            toughness: props.toughness
+            toughness: props.toughness,
+            searchText: props.searchText
         }
         this.search = this.search.bind(this);
+        this.searchTextChanged = this.searchTextChanged.bind(this);
         this.colorChanged = this.colorChanged.bind(this);
         this.powerChanged = this.powerChanged.bind(this);
         this.toughChanged = this.toughChanged.bind(this);
     }
     colorChanged(event) {
         this.setState({
-            cardData: this.state.cardData,
-            color: event.target.value,
-            power: this.state.power,
-            toughness: this.state.toughness
+            color: event.target.value
         })
     }
     powerChanged(event) {
         this.setState({
-            cardData: this.state.cardData,
-            color: this.state.color,
-            power: event,
-            toughness: this.state.toughness
+            power: event
         })
     }
     toughChanged(event) {
         this.setState({
-            cardData: this.state.cardData,
-            color: this.state.color,
-            power: this.state.power,
             toughness: event
+        })
+    }
+    searchTextChanged(event) {
+        this.setState({
+            searchText: event.target.value
         })
     }
     search() {
         let query = 'https://api.scryfall.com/cards/search?q='
         let hasOthers = false
+        if (this.state.searchText !== '' && this.state.searchText !== undefined) {
+            query += this.state.searchText
+            hasOthers = true
+        }
         if (this.state.color.length > 0) {
             console.log(colors.filter((color) => !this.state.color.includes(color.code)))
-            query += encodeURIComponent('c:' + this.state.color.join(''))
+            query += (hasOthers ? '+' : '') + encodeURIComponent('c:' + this.state.color.join(''))
                 + '+' + encodeURIComponent('-c:' + colors.filter((color) => !this.state.color.includes(color.code)).map((color) => color.code).join(''))
             hasOthers = true
         }
         if (this.state.power !== '') {
-            query += (hasOthers ? '+' : '') + 'pow' + encodeURIComponent(this.state.power) // might want to use drop-down box for equality comparison
+            query += (hasOthers ? '+' : '') + 'pow' + encodeURIComponent(this.state.power)
             hasOthers = true
         }
         if (this.state.toughness !== '' && this.state.toughness != null) {
-            query += (hasOthers ? '+' : '') + 'tou' + encodeURIComponent(this.state.toughness) // might want to use drop-down box for equality comparison
+            query += (hasOthers ? '+' : '') + 'tou' + encodeURIComponent(this.state.toughness)
             hasOthers = true
         }
         console.log(query)
@@ -90,7 +93,8 @@ export default class CardSearch extends Component {
         return (
             <div>
                 <Divider style={dividerStyle} />
-
+                
+                <SearchInput searchTextChanged={this.searchTextChanged} />
                 <ColorSelector colorChanged={this.colorChanged} color={this.state.color} />
                 <IntegerComparisonSelector label='Power' handleChanged={this.powerChanged} equality='>' num='3' />
                 <IntegerComparisonSelector label='Toughness' handleChanged={this.toughChanged} equality='' num='' />
