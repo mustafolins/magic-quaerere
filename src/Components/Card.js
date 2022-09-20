@@ -16,7 +16,13 @@ export default class Card extends Component {
         super(props)
 
         this.state = {
-            imgToUse: (props.image_uris !== undefined && props.image_uris.normal !== undefined) ? props.image_uris.normal : ''
+            imgToUse: (props.image_uris !== undefined && props.image_uris.normal !== undefined) ? props.image_uris.normal : '',
+            priceToUse: (this.props.prices != null)
+                ? ((this.props.prices.usd_foil != null)
+                    ? this.props.prices.usd_foil : ((this.props.prices.usd != null)
+                        ? this.props.prices.usd : 'No listed price.'
+                    )
+                ) : 'No listed price.'
         }
     }
     render() {
@@ -31,7 +37,8 @@ export default class Card extends Component {
                     <tr>
                         <td>
                             <p>CMC: {this.props.cmc}</p>
-                            <p>USD foil: {(this.props.prices != null && this.props.prices.usd_foil != null) ? this.props.prices.usd_foil : ''}</p>
+                            <p>USD: {this.state.priceToUse}</p>
+                            <p>Commander: {this.props.legalities.commander} Modern: {this.props.legalities.modern} Standard: {this.props.legalities.standard}</p>
                         </td>
                     </tr>
                     <tr>

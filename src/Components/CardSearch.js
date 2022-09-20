@@ -2,6 +2,7 @@ import { Button, Divider } from '@mui/material';
 import React, { Component } from 'react'
 import Card from './Card';
 import ColorSelector, { colors } from './ColorSelector';
+import FormatSelector from './FormatSelector';
 import IntegerComparisonSelector from './IntegerComparisonSelector';
 import SearchInput from './SearchInput';
 
@@ -22,7 +23,8 @@ export default class CardSearch extends Component {
             power: props.power,
             toughness: props.toughness,
             searchText: props.searchText,
-            nameText: props.searchText
+            nameText: props.searchText,
+            format: props.format
         }
         this.search = this.search.bind(this);
         this.containsTextChanged = this.containsTextChanged.bind(this);
@@ -30,6 +32,7 @@ export default class CardSearch extends Component {
         this.colorChanged = this.colorChanged.bind(this);
         this.powerChanged = this.powerChanged.bind(this);
         this.toughChanged = this.toughChanged.bind(this);
+        this.formatChanged = this.formatChanged.bind(this);
     }
     colorChanged(event) {
         this.setState({
@@ -56,6 +59,11 @@ export default class CardSearch extends Component {
             searchText: event.target.value
         })
     }
+    formatChanged(format) {
+        this.setState({
+            format: format
+        })
+    }
     search() {
         let query = 'https://api.scryfall.com/cards/search?q='
         let hasOthers = false
@@ -65,6 +73,10 @@ export default class CardSearch extends Component {
         }
         if (this.state.searchText !== '' && this.state.searchText !== undefined) {
             query += (hasOthers ? '+' : '') + encodeURIComponent('o:') + '"' + this.state.searchText + '"'
+            hasOthers = true
+        }
+        if (this.state.format !== '' && this.state.format !== undefined) {
+            query += (hasOthers ? '+' : '') + encodeURIComponent('f:') + this.state.format
             hasOthers = true
         }
         if (this.state.color.length > 0) {
@@ -107,9 +119,14 @@ export default class CardSearch extends Component {
                 
                 <SearchInput searchTextChanged={this.nameTextChanged} placeHolder='Name' />
                 <SearchInput searchTextChanged={this.containsTextChanged} placeHolder='Contains' />
+
+                <FormatSelector label='Format' handleChanged={this.formatChanged} format='' />
+                
                 <ColorSelector colorChanged={this.colorChanged} color={this.state.color} />
+
                 <IntegerComparisonSelector label='Power' handleChanged={this.powerChanged} equality='>' num='3' />
                 <IntegerComparisonSelector label='Toughness' handleChanged={this.toughChanged} equality='' num='' />
+
                 <Button variant='contained' onClick={this.search} style={{margin: '30px'}}>Search!</Button>
 
                 <Divider style={dividerStyle} />

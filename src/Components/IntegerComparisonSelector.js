@@ -20,9 +20,9 @@ export default class IntegerComparisonSelector extends Component {
     equalityChanged(event) {
         this.setState({
             equality: event.target.value,
-            num: this.state.num
+            num: event.target.value === '' ? '' : this.state.num
         })
-        this.props.handleChanged(`${event.target.value}${this.state.num}`)
+        this.props.handleChanged(`${event.target.value}${event.target.value === '' ? '' : this.state.num}`)
     }
     numChanged(event) {
         this.setState({
