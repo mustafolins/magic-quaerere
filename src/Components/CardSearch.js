@@ -21,10 +21,12 @@ export default class CardSearch extends Component {
             color: props.color,
             power: props.power,
             toughness: props.toughness,
-            searchText: props.searchText
+            searchText: props.searchText,
+            nameText: props.searchText
         }
         this.search = this.search.bind(this);
-        this.searchTextChanged = this.searchTextChanged.bind(this);
+        this.containsTextChanged = this.containsTextChanged.bind(this);
+        this.nameTextChanged = this.nameTextChanged.bind(this);
         this.colorChanged = this.colorChanged.bind(this);
         this.powerChanged = this.powerChanged.bind(this);
         this.toughChanged = this.toughChanged.bind(this);
@@ -44,7 +46,12 @@ export default class CardSearch extends Component {
             toughness: event
         })
     }
-    searchTextChanged(event) {
+    nameTextChanged(event) {
+        this.setState({
+            nameText: event.target.value
+        })
+    }
+    containsTextChanged(event) {
         this.setState({
             searchText: event.target.value
         })
@@ -52,8 +59,12 @@ export default class CardSearch extends Component {
     search() {
         let query = 'https://api.scryfall.com/cards/search?q='
         let hasOthers = false
+        if (this.state.nameText !== '' && this.state.nameText !== undefined) {
+            query += this.state.nameText
+            hasOthers = true
+        }
         if (this.state.searchText !== '' && this.state.searchText !== undefined) {
-            query += this.state.searchText
+            query += (hasOthers ? '+' : '') + encodeURIComponent('o:') + '"' + this.state.searchText + '"'
             hasOthers = true
         }
         if (this.state.color.length > 0) {
@@ -94,7 +105,8 @@ export default class CardSearch extends Component {
             <div>
                 <Divider style={dividerStyle} />
                 
-                <SearchInput searchTextChanged={this.searchTextChanged} />
+                <SearchInput searchTextChanged={this.nameTextChanged} placeHolder='Name' />
+                <SearchInput searchTextChanged={this.containsTextChanged} placeHolder='Contains' />
                 <ColorSelector colorChanged={this.colorChanged} color={this.state.color} />
                 <IntegerComparisonSelector label='Power' handleChanged={this.powerChanged} equality='>' num='3' />
                 <IntegerComparisonSelector label='Toughness' handleChanged={this.toughChanged} equality='' num='' />
