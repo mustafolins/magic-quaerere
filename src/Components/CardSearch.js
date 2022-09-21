@@ -112,6 +112,8 @@ export default class CardSearch extends Component {
     render() {
         return (
             <div>
+                <h1>Magic Quaerere</h1>
+
                 <Divider style={dividerStyle} />
 
                 <SearchInput searchTextChanged={this.nameTextChanged} placeHolder='Name' />
@@ -128,9 +130,9 @@ export default class CardSearch extends Component {
 
                 <Divider style={dividerStyle} />
 
-                <Grid container>
+                <Grid container style={{ justifyContent: 'center' }}>
                     {(this.state.cardData == null) ? '' : this.state.cardData.map((card) => (
-                        <StyledPaper key={card.id} elevation={10} style={{margin: '5px'}}>
+                        <StyledPaper key={card.id} elevation={10} style={{ margin: '5px' }}>
                             <Card name={card.name} oracle_text={card.oracle_text} flavor_text={card.flavor_text} image_uris={card.image_uris}
                                 cmc={card.cmc} color_identity={card.color_identity} legalities={card.legalities} prices={card.prices} />
                         </StyledPaper>
