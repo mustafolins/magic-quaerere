@@ -7,6 +7,7 @@ import Chip from '@mui/material/Chip';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 
+// export this array so parent class can use it.
 export const colors = [
     {
         color: 'green',
@@ -43,6 +44,7 @@ export default class ColorSelector extends Component {
                     onChange={this.props.colorChanged}
                     input={<OutlinedInput id="color-select-multiple-chip" label="Chip" />}
                     renderValue={(selected) => (
+                        // render selected values as chips
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                             {selected.map((value) => (
                                 <Chip
@@ -58,6 +60,7 @@ export default class ColorSelector extends Component {
                         </Box>
                     )}
                 >
+                    {/* Create menu items from colors array. */}
                     {colors.map((color) => (
                         <MenuItem
                             key={color.color}

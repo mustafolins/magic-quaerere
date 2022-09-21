@@ -1,4 +1,5 @@
-import { Button, Divider } from '@mui/material';
+import { Button, Divider, Paper, Grid } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import React, { Component } from 'react'
 import Card from './Card';
 import ColorSelector, { colors } from './ColorSelector';
@@ -6,9 +7,14 @@ import FormatSelector from './FormatSelector';
 import IntegerComparisonSelector from './IntegerComparisonSelector';
 import SearchInput from './SearchInput';
 
-const divStyle = {
-    padding: '2px'
-}
+const StyledPaper = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+    ...theme.typography.body1,
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    color: theme.palette.text.primary,
+    border: '1px dashed #fff'
+}));
 
 const dividerStyle = {
     margin: '15px'
@@ -116,27 +122,29 @@ export default class CardSearch extends Component {
         return (
             <div>
                 <Divider style={dividerStyle} />
-                
+
                 <SearchInput searchTextChanged={this.nameTextChanged} placeHolder='Name' />
                 <SearchInput searchTextChanged={this.containsTextChanged} placeHolder='Contains' />
 
                 <FormatSelector label='Format' handleChanged={this.formatChanged} format='' />
-                
+
                 <ColorSelector colorChanged={this.colorChanged} color={this.state.color} />
 
                 <IntegerComparisonSelector label='Power' handleChanged={this.powerChanged} equality='>' num='3' />
                 <IntegerComparisonSelector label='Toughness' handleChanged={this.toughChanged} equality='' num='' />
 
-                <Button variant='contained' onClick={this.search} style={{margin: '30px'}}>Search!</Button>
+                <Button variant='contained' onClick={this.search} style={{ margin: '30px' }}>Search!</Button>
 
                 <Divider style={dividerStyle} />
 
-                {(this.state.cardData == null) ? '' : this.state.cardData.map((card) => (
-                    <div key={card.id} style={divStyle}>
-                        <Card name={card.name} oracle_text={card.oracle_text} flavor_text={card.flavor_text} image_uris={card.image_uris}
-                            cmc={card.cmc} color_identity={card.color_identity} legalities={card.legalities} prices={card.prices} />
-                    </div>
-                ))}
+                <Grid container>
+                    {(this.state.cardData == null) ? '' : this.state.cardData.map((card) => (
+                        <StyledPaper key={card.id} elevation={10} style={{margin: '5px'}}>
+                            <Card name={card.name} oracle_text={card.oracle_text} flavor_text={card.flavor_text} image_uris={card.image_uris}
+                                cmc={card.cmc} color_identity={card.color_identity} legalities={card.legalities} prices={card.prices} />
+                        </StyledPaper>
+                    ))}
+                </Grid>
             </div>
         )
     }

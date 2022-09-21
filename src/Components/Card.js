@@ -7,10 +7,6 @@ const imgStyle = {
     width: '95%'
 }
 
-const divStyle = {
-    border: '1px dashed #fff'
-}
-
 export default class Card extends Component {
     constructor(props) {
         super(props)
@@ -27,7 +23,7 @@ export default class Card extends Component {
     }
     render() {
         return (
-            <table style={divStyle}>
+            <table>
                 <thead>
                     <tr>
                         <th>{this.props.name}</th>
@@ -35,7 +31,7 @@ export default class Card extends Component {
                 </thead>
                 <tbody>
                     <tr>
-                        <td>
+                        <td style={{ textAlign: 'right'}}>
                             <p>CMC: {this.props.cmc}</p>
                             <p>USD: {this.state.priceToUse}</p>
                             <p>Commander: {this.props.legalities.commander} Modern: {this.props.legalities.modern} Standard: {this.props.legalities.standard}</p>
