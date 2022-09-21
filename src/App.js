@@ -1,3 +1,4 @@
+import React from 'react'
 import './App.css';
 import CardSearch from './Components/CardSearch';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
