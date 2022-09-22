@@ -1,4 +1,4 @@
-import { Alert, Button, CircularProgress, Divider, Grid, Snackbar } from '@mui/material';
+import { Alert, Button, CircularProgress, Divider, Grid, Pagination, Snackbar } from '@mui/material';
 import React, { Component } from 'react'
 import Card from './Card';
 import ColorSelector, { colors } from './ColorSelector';
@@ -19,6 +19,8 @@ export default class CardSearch extends Component {
             hasEror: false,
             totalCards: 0,
             showCardNotification: false,
+            nextPage: '',
+            currentPage: 0,
             cardData: null,
             color: props.color,
             power: props.power,
@@ -36,6 +38,8 @@ export default class CardSearch extends Component {
         this.formatChanged = this.formatChanged.bind(this);
         this.generateQuery = this.generateQuery.bind(this);
         this.handleNotificationClose = this.handleNotificationClose.bind(this);
+        this.loadNextPage = this.loadNextPage.bind(this);
+        this.getSearchResults = this.getSearchResults.bind(this);
     }
     colorChanged(event) {
         this.setState({
@@ -67,17 +71,28 @@ export default class CardSearch extends Component {
             format: format
         })
     }
-    handleNotificationClose(){
+    handleNotificationClose() {
         this.setState({
             showCardNotification: false
         })
     }
+    loadNextPage(event, page) {
+        this.setState({
+            currentPage: page
+        })
+
+        let pageQuery = this.state.nextPage
+        this.getSearchResults(pageQuery.replace(/(page=)\d*/, `page=${page}`), true)
+    }
     search() {
+        let query = this.generateQuery();
+        this.getSearchResults(query, false);
+    }
+    getSearchResults(query, isFromPagination) {
         this.setState({
             isSearching: true,
-            totalCards: 0
+            totalCards: !isFromPagination ? 0 : this.state.totalCards
         })
-        let query = this.generateQuery();
         fetch(query,
             {
                 method: 'GET'
@@ -86,17 +101,19 @@ export default class CardSearch extends Component {
                 return response.json();
             })
             .then((data) => {
-                console.log(data)
+                console.log(data);
 
                 this.setState({
                     cardData: data.data,
                     isSearching: false,
                     hasEror: data.data === undefined,
                     totalCards: (data.data === undefined) ? 0 : data.total_cards,
-                    showCardNotification: data.total_cards > 0
-                })
-            })
+                    showCardNotification: (data.data === undefined) ? false : data.total_cards > 0 && !isFromPagination,
+                    nextPage: (data.data === undefined) ? '' : ((isFromPagination) ? this.state.nextPage : data.next_page)
+                });
+            });
     }
+
     generateQuery() {
         let query = 'https://api.scryfall.com/cards/search?q=';
         let hasOthers = false;
@@ -157,6 +174,8 @@ export default class CardSearch extends Component {
 
                 <Divider style={dividerStyle} />
 
+                {this.state.totalCards > 0 ? <Pagination count={Math.ceil(this.state.totalCards / 175)} onChange={this.loadNextPage} page={this.state.currentPage} /> : ''}
+
                 {/* Show progress wheel if retrieving results */}
                 {(this.state.isSearching) ? <CircularProgress /> : ''}
 
@@ -177,6 +196,8 @@ export default class CardSearch extends Component {
                         </StyledPaper>
                     ))}
                 </Grid>
+
+                {this.state.totalCards > 0 ? <Pagination count={Math.ceil(this.state.totalCards / 175)} onChange={this.loadNextPage} page={this.state.currentPage} /> : ''}
             </div>
         )
     }
