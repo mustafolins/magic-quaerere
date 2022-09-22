@@ -30,7 +30,7 @@ export default class Card extends Component {
                 <h2>{this.props.name}</h2>
                 {/* Details about card (i.e. cmc, amount, legalities) */}
                 <Accordion expanded>
-                    <AccordionSummary expandIcon={<ExpandMore />}>
+                    <AccordionSummary>
                         <h3>Details:</h3>
                     </AccordionSummary>
                     <AccordionDetails style={{textAlign: 'right'}}>

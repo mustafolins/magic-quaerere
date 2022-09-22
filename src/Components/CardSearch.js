@@ -1,4 +1,4 @@
-import { Button, Divider, Grid } from '@mui/material';
+import { Alert, Button, CircularProgress, Divider, Grid } from '@mui/material';
 import React, { Component } from 'react'
 import Card from './Card';
 import ColorSelector, { colors } from './ColorSelector';
@@ -15,6 +15,8 @@ export default class CardSearch extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            isSearching: false,
+            hasEror: false,
             cardData: null,
             color: props.color,
             power: props.power,
@@ -30,6 +32,7 @@ export default class CardSearch extends Component {
         this.powerChanged = this.powerChanged.bind(this);
         this.toughChanged = this.toughChanged.bind(this);
         this.formatChanged = this.formatChanged.bind(this);
+        this.generateQuery = this.generateQuery.bind(this);
     }
     colorChanged(event) {
         this.setState({
@@ -62,35 +65,10 @@ export default class CardSearch extends Component {
         })
     }
     search() {
-        let query = 'https://api.scryfall.com/cards/search?q='
-        let hasOthers = false
-        if (this.state.nameText !== '' && this.state.nameText !== undefined) {
-            query += this.state.nameText
-            hasOthers = true
-        }
-        if (this.state.searchText !== '' && this.state.searchText !== undefined) {
-            query += (hasOthers ? '+' : '') + encodeURIComponent('o:') + '"' + this.state.searchText + '"'
-            hasOthers = true
-        }
-        if (this.state.format !== '' && this.state.format !== undefined) {
-            query += (hasOthers ? '+' : '') + encodeURIComponent('f:') + this.state.format
-            hasOthers = true
-        }
-        if (this.state.color.length > 0) {
-            console.log(colors.filter((color) => !this.state.color.includes(color.code)))
-            query += (hasOthers ? '+' : '') + encodeURIComponent('c:' + this.state.color.join(''))
-                + '+' + encodeURIComponent('-c:' + colors.filter((color) => !this.state.color.includes(color.code)).map((color) => color.code).join(''))
-            hasOthers = true
-        }
-        if (this.state.power !== '') {
-            query += (hasOthers ? '+' : '') + 'pow' + encodeURIComponent(this.state.power)
-            hasOthers = true
-        }
-        if (this.state.toughness !== '' && this.state.toughness != null) {
-            query += (hasOthers ? '+' : '') + 'tou' + encodeURIComponent(this.state.toughness)
-            hasOthers = true
-        }
-        console.log(query)
+        this.setState({
+            isSearching: true
+        })
+        let query = this.generateQuery();
         fetch(query,
             {
                 method: 'GET'
@@ -105,10 +83,51 @@ export default class CardSearch extends Component {
                     cardData: data.data,
                     color: this.state.color,
                     power: this.state.power,
-                    toughness: this.state.toughness
+                    toughness: this.state.toughness,
+                    isSearching: false,
+                    hasEror: data.data === undefined
                 })
             })
     }
+    generateQuery() {
+        let query = 'https://api.scryfall.com/cards/search?q=';
+        let hasOthers = false;
+        // paramater for searching cards that contain the given name text in the name
+        if (this.state.nameText !== '' && this.state.nameText !== undefined) {
+            query += this.state.nameText;
+            hasOthers = true;
+        }
+        // paramater for searching contents of the oracle text of a card
+        if (this.state.searchText !== '' && this.state.searchText !== undefined) {
+            query += (hasOthers ? '+' : '') + encodeURIComponent('o:') + '"' + this.state.searchText + '"';
+            hasOthers = true;
+        }
+        // parameter for specifying legality/format (i.e. commander, modern, etc.)
+        if (this.state.format !== '' && this.state.format !== undefined) {
+            query += (hasOthers ? '+' : '') + encodeURIComponent('f:') + this.state.format;
+            hasOthers = true;
+        }
+        // adds parameter for the gien colors and excluding unspecified colors from search
+        if (this.state.color.length > 0) {
+            console.log(colors.filter((color) => !this.state.color.includes(color.code)));
+            query += (hasOthers ? '+' : '') + encodeURIComponent('c:' + this.state.color.join(''))
+                + '+' + encodeURIComponent('-c:' + colors.filter((color) => !this.state.color.includes(color.code)).map((color) => color.code).join(''));
+            hasOthers = true;
+        }
+        // adds power parameter
+        if (this.state.power !== '') {
+            query += (hasOthers ? '+' : '') + 'pow' + encodeURIComponent(this.state.power);
+            hasOthers = true;
+        }
+        // adds toughness parameter
+        if (this.state.toughness !== '' && this.state.toughness != null) {
+            query += (hasOthers ? '+' : '') + 'tou' + encodeURIComponent(this.state.toughness);
+            hasOthers = true;
+        }
+        console.log(query);
+        return query;
+    }
+
     render() {
         return (
             <div>
@@ -130,6 +149,13 @@ export default class CardSearch extends Component {
 
                 <Divider style={dividerStyle} />
 
+                {/* Show progress wheel if retrieving results */}
+                {(this.state.isSearching) ? <CircularProgress /> : ''}
+
+                {/* Display error if no cards could be found. */}
+                {(this.state.hasEror) ? <Alert severity='error'>No cards found with the current search criteria!</Alert> : ''}
+
+                {/* Display cards in a grid */}
                 <Grid container style={{ justifyContent: 'center' }}>
                     {(this.state.cardData == null) ? '' : this.state.cardData.map((card) => (
                         <StyledPaper key={card.id} elevation={10} style={{ margin: '5px' }}>
