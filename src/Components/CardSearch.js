@@ -85,6 +85,10 @@ export default class CardSearch extends Component {
         this.getSearchResults(pageQuery.replace(/(page=)\d*/, `page=${page}`), true)
     }
     search() {
+        this.setState({
+            currentPage: 1
+        })
+
         let query = this.generateQuery();
         this.getSearchResults(query, false);
     }
