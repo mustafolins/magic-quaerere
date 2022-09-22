@@ -1,4 +1,4 @@
-import { Alert, Button, CircularProgress, Divider, Grid } from '@mui/material';
+import { Alert, Button, CircularProgress, Divider, Grid, Snackbar } from '@mui/material';
 import React, { Component } from 'react'
 import Card from './Card';
 import ColorSelector, { colors } from './ColorSelector';
@@ -17,6 +17,8 @@ export default class CardSearch extends Component {
         this.state = {
             isSearching: false,
             hasEror: false,
+            totalCards: 0,
+            showCardNotification: false,
             cardData: null,
             color: props.color,
             power: props.power,
@@ -33,6 +35,7 @@ export default class CardSearch extends Component {
         this.toughChanged = this.toughChanged.bind(this);
         this.formatChanged = this.formatChanged.bind(this);
         this.generateQuery = this.generateQuery.bind(this);
+        this.handleNotificationClose = this.handleNotificationClose.bind(this);
     }
     colorChanged(event) {
         this.setState({
@@ -64,9 +67,15 @@ export default class CardSearch extends Component {
             format: format
         })
     }
+    handleNotificationClose(){
+        this.setState({
+            showCardNotification: false
+        })
+    }
     search() {
         this.setState({
-            isSearching: true
+            isSearching: true,
+            totalCards: 0
         })
         let query = this.generateQuery();
         fetch(query,
@@ -81,11 +90,10 @@ export default class CardSearch extends Component {
 
                 this.setState({
                     cardData: data.data,
-                    color: this.state.color,
-                    power: this.state.power,
-                    toughness: this.state.toughness,
                     isSearching: false,
-                    hasEror: data.data === undefined
+                    hasEror: data.data === undefined,
+                    totalCards: (data.data === undefined) ? 0 : data.total_cards,
+                    showCardNotification: data.total_cards > 0
                 })
             })
     }
@@ -154,6 +162,11 @@ export default class CardSearch extends Component {
 
                 {/* Display error if no cards could be found. */}
                 {(this.state.hasEror) ? <Alert severity='error'>No cards found with the current search criteria!</Alert> : ''}
+
+                {/* Display notification for number of cards found. */}
+                <Snackbar open={this.state.showCardNotification} autoHideDuration={10000} onClose={this.handleNotificationClose}>
+                    <Alert severity='success'>Found {this.state.totalCards} cards.</Alert>
+                </Snackbar>
 
                 {/* Display cards in a grid */}
                 <Grid container style={{ justifyContent: 'center' }}>
