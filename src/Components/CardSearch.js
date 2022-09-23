@@ -1,5 +1,6 @@
 import { Alert, Button, CircularProgress, Divider, Grid, Pagination, Snackbar } from '@mui/material';
 import React, { Component } from 'react'
+import AutocompleteName from './AutocompleteName';
 import Card from './Card';
 import ColorSelector, { colors } from './ColorSelector';
 import FormatSelector from './FormatSelector';
@@ -56,9 +57,9 @@ export default class CardSearch extends Component {
             toughness: event
         })
     }
-    nameTextChanged(event) {
+    nameTextChanged(value) {
         this.setState({
-            nameText: event.target.value
+            nameText: value
         })
     }
     containsTextChanged(event) {
@@ -164,8 +165,8 @@ export default class CardSearch extends Component {
 
                 <Divider style={dividerStyle} />
 
-                <SearchInput searchTextChanged={this.nameTextChanged} placeHolder='Name' />
-                <SearchInput searchTextChanged={this.containsTextChanged} placeHolder='Contains' />
+                <AutocompleteName searchTextChanged={this.nameTextChanged} label='Name' />
+                <SearchInput searchTextChanged={this.containsTextChanged} label='Contains' />
 
                 <FormatSelector label='Format' handleChanged={this.formatChanged} format='' />
 
