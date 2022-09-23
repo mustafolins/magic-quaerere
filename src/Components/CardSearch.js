@@ -1,6 +1,7 @@
 import { Alert, Button, CircularProgress, Divider, Grid, Pagination, Snackbar } from '@mui/material';
 import React, { Component } from 'react'
 import AutocompleteName from './AutocompleteName';
+import AutocompleteWithUrl from './AutocompleteWithUrl';
 import Card from './Card';
 import ColorSelector, { colors } from './ColorSelector';
 import FormatSelector from './FormatSelector';
@@ -28,11 +29,13 @@ export default class CardSearch extends Component {
             toughness: props.toughness,
             searchText: props.searchText,
             nameText: props.searchText,
+            creatureText: props.creatureText,
             format: props.format
         }
         this.search = this.search.bind(this);
         this.containsTextChanged = this.containsTextChanged.bind(this);
         this.nameTextChanged = this.nameTextChanged.bind(this);
+        this.creatureTextChanged = this.creatureTextChanged.bind(this);
         this.colorChanged = this.colorChanged.bind(this);
         this.powerChanged = this.powerChanged.bind(this);
         this.toughChanged = this.toughChanged.bind(this);
@@ -65,6 +68,11 @@ export default class CardSearch extends Component {
     containsTextChanged(event) {
         this.setState({
             searchText: event.target.value
+        })
+    }
+    creatureTextChanged(value){
+        this.setState({
+            creatureText: value
         })
     }
     formatChanged(format) {
@@ -145,13 +153,18 @@ export default class CardSearch extends Component {
             hasOthers = true;
         }
         // adds power parameter
-        if (this.state.power !== '') {
+        if (this.state.power !== '' && this.state.power !== undefined) {
             query += (hasOthers ? '+' : '') + 'pow' + encodeURIComponent(this.state.power);
             hasOthers = true;
         }
         // adds toughness parameter
-        if (this.state.toughness !== '' && this.state.toughness != null) {
+        if (this.state.toughness !== '' && this.state.toughness !== undefined) {
             query += (hasOthers ? '+' : '') + 'tou' + encodeURIComponent(this.state.toughness);
+            hasOthers = true;
+        }
+        // adds creature type parameter
+        if (this.state.creatureText !== '' && this.state.creatureText !== undefined) {
+            query += (hasOthers ? '+' : '') + encodeURIComponent('t:' + this.state.creatureText);
             hasOthers = true;
         }
         console.log(query);
@@ -167,6 +180,7 @@ export default class CardSearch extends Component {
 
                 <AutocompleteName searchTextChanged={this.nameTextChanged} label='Name' />
                 <SearchInput searchTextChanged={this.containsTextChanged} label='Contains' />
+                <AutocompleteWithUrl searchTextChanged={this.creatureTextChanged} label='Creature Types' url='https://api.scryfall.com/catalog/creature-types' />
 
                 <FormatSelector label='Format' handleChanged={this.formatChanged} format='' />
 
