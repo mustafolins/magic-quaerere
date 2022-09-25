@@ -30,6 +30,7 @@ export default class CardSearch extends Component {
             searchText: props.searchText,
             nameText: props.searchText,
             creatureText: props.creatureText,
+            keywordText: props.keywordText,
             format: props.format
         }
         this.search = this.search.bind(this);
@@ -44,6 +45,7 @@ export default class CardSearch extends Component {
         this.handleNotificationClose = this.handleNotificationClose.bind(this);
         this.loadNextPage = this.loadNextPage.bind(this);
         this.getSearchResults = this.getSearchResults.bind(this);
+        this.keywordTextChanged = this.keywordTextChanged.bind(this);
     }
     colorChanged(event) {
         this.setState({
@@ -73,6 +75,11 @@ export default class CardSearch extends Component {
     creatureTextChanged(value){
         this.setState({
             creatureText: value
+        })
+    }
+    keywordTextChanged(value){
+        this.setState({
+            keywordText: value
         })
     }
     formatChanged(format) {
@@ -167,6 +174,11 @@ export default class CardSearch extends Component {
             query += (hasOthers ? '+' : '') + encodeURIComponent('t:' + this.state.creatureText);
             hasOthers = true;
         }
+        // adds keyword ability parameter
+        if (this.state.keywordText !== '' && this.state.keywordText !== undefined) {
+            query += (hasOthers ? '+' : '') + encodeURIComponent('keyword:' + this.state.keywordText);
+            hasOthers = true;
+        }
         console.log(query);
         return query;
     }
@@ -181,6 +193,7 @@ export default class CardSearch extends Component {
                 <AutocompleteName searchTextChanged={this.nameTextChanged} label='Name' />
                 <SearchInput searchTextChanged={this.containsTextChanged} label='Contains' />
                 <AutocompleteWithUrl searchTextChanged={this.creatureTextChanged} label='Creature Types' url='https://api.scryfall.com/catalog/creature-types' />
+                <AutocompleteWithUrl searchTextChanged={this.keywordTextChanged} label='Keyword Abilities' url='https://api.scryfall.com/catalog/keyword-abilities' />
 
                 <FormatSelector label='Format' handleChanged={this.formatChanged} format='' />
 
