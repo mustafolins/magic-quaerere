@@ -23,8 +23,6 @@ export default class AutocompleteWithUrl extends Component {
                 return response.json()
             })
             .then((data) => {
-                console.log(data);
-
                 this.setState({
                     possibleOptions: data.data,
                     loading: false
