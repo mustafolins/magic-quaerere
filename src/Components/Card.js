@@ -1,5 +1,5 @@
-import { ExpandMore } from '@mui/icons-material'
-import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
+import { Tab, Tabs } from '@mui/material'
+import { Box } from '@mui/system'
 import React, { Component } from 'react'
 import { StyledPaper } from './StyledPaper'
 
@@ -22,8 +22,11 @@ export default class Card extends Component {
                         ? this.props.prices.usd : 'No listed price.'
                     )
                 ) : 'No listed price.',
-            rulings: []
+            rulings: [],
+            selectedIndex: 1
         }
+
+        this.handleTabChange = this.handleTabChange.bind(this)
     }
     componentDidMount() {
         fetch(`https://api.scryfall.com/cards/${this.props.id}/rulings`,
@@ -39,6 +42,11 @@ export default class Card extends Component {
                 })
             })
     }
+    handleTabChange(event, newValue) {
+        this.setState({
+            selectedIndex: newValue
+        })
+    }
     render() {
         return (
             <div style={{ width: '350px' }}>
@@ -47,50 +55,36 @@ export default class Card extends Component {
                 <StyledPaper elevation={16} style={{ marginBottom: '10px' }}>
                     <img src={this.state.imgToUse} alt='' style={imgStyle} />
                 </StyledPaper>
-                {/* Details about card (i.e. cmc, amount, legalities) */}
-                <Accordion expanded>
-                    <AccordionSummary>
-                        <h3>Details:</h3>
-                    </AccordionSummary>
-                    <AccordionDetails style={{ textAlign: 'right' }}>
-                        <p>CMC: {this.props.cmc}</p>
-                        <p>USD: {this.state.priceToUse}</p>
-                        <p>Commander: {this.props.legalities.commander} Modern: {this.props.legalities.modern} Standard: {this.props.legalities.standard}</p>
-                    </AccordionDetails>
-                </Accordion>
-                {/* Oracle text */}
-                <Accordion style={{ textAlign: 'left' }}>
-                    <AccordionSummary expandIcon={<ExpandMore />}>
-                        <h3>Oracle Text:</h3>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <p>{this.props.oracle_text}</p>
-                    </AccordionDetails>
-                </Accordion>
-                {/* Flavor text */}
-                {this.props.flavor_text === undefined ? '' :
-                    <Accordion style={{ textAlign: 'left' }}>
-                        <AccordionSummary expandIcon={<ExpandMore />}>
-                            <h3>Flavor:</h3>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <p>{this.props.flavor_text}</p>
-                        </AccordionDetails>
-                    </Accordion>
-                }
-                {/* Rulings */}
-                {this.state.rulings === undefined || this.state.rulings.length === 0 ? '' :
-                    <Accordion style={{ textAlign: 'left' }}>
-                        <AccordionSummary expandIcon={<ExpandMore />}>
-                            <h3>Rulings:</h3>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            {this.state.rulings !== undefined && this.state.rulings.length > 0 ? this.state.rulings.map((rule, index) => (
-                                <p key={`${rule.id}-${index}`}>{rule.comment}</p>
-                            )) : ''}
-                        </AccordionDetails>
-                    </Accordion>
-                }
+                <Box sx={{ width: '100%' }}>
+                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                        <Tabs value={this.state.selectedIndex} onChange={this.handleTabChange} variant='scrollable' scrollButtons='auto'>
+                            <Tab label='Details' value={1} />
+                            <Tab label='Oracle Text' value={2} />
+                            <Tab label='Flavor Text' value={3} disabled={this.props.flavor_text === undefined} />
+                            <Tab label='Rulings' value={4} disabled={this.state.rulings === undefined || this.state.rulings.length === 0} />
+                        </Tabs>
+                    </Box>
+                    {/* Details about card (i.e. cmc, amount, legalities) */}
+                    {this.state.selectedIndex !== 1 ? '' :
+                        <div style={{ textAlign: 'right' }}>
+                            <p>CMC: {this.props.cmc}</p>
+                            <p>USD: {this.state.priceToUse}</p>
+                            <p>Commander: {this.props.legalities.commander} Modern: {this.props.legalities.modern} Standard: {this.props.legalities.standard}</p>
+                        </div>
+                    }
+                    {/* Oracle text */}
+                    {this.state.selectedIndex !== 2 ? '' :
+                        <p style={{ textAlign: 'left' }}>{this.props.oracle_text}</p>
+                    }
+                    {/* Flavor text */}
+                    {this.state.selectedIndex !== 3 || this.props.flavor_text === undefined ? '' :
+                        <p style={{ textAlign: 'left' }}>{this.props.flavor_text}</p>
+                    }
+                    {/* Rulings */}
+                    {this.state.selectedIndex === 4 && this.state.rulings !== undefined && this.state.rulings.length > 0 ? this.state.rulings.map((rule, index) => (
+                        <p key={`${rule.id}-${index}`} style={{ textAlign: 'left' }}>{rule.comment}</p>
+                    )) : ''}
+                </Box>
             </div>
         )
     }
