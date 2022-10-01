@@ -1,7 +1,11 @@
 import { Tab, Tabs } from '@mui/material'
 import { Box } from '@mui/system'
 import React, { Component } from 'react'
-import { StyledPaper } from './StyledPaper'
+import { StyledPaper } from '../StyledPaper'
+import CardDetails from './CardDetails'
+import CardFlavorText from './CardFlavorText'
+import CardOracleText from './CardOracleText'
+import CardRules from './CardRules'
 
 const imgStyle = {
     border: '1px solid #ddd',
@@ -16,12 +20,6 @@ export default class Card extends Component {
 
         this.state = {
             imgToUse: (props.image_uris !== undefined && props.image_uris.normal !== undefined) ? props.image_uris.normal : '',
-            priceToUse: (this.props.prices != null)
-                ? ((this.props.prices.usd_foil != null)
-                    ? this.props.prices.usd_foil : ((this.props.prices.usd != null)
-                        ? this.props.prices.usd : 'No listed price.'
-                    )
-                ) : 'No listed price.',
             rulings: [],
             selectedIndex: 1
         }
@@ -66,24 +64,20 @@ export default class Card extends Component {
                     </Box>
                     {/* Details about card (i.e. cmc, amount, legalities) */}
                     {this.state.selectedIndex !== 1 ? '' :
-                        <div style={{ textAlign: 'right' }}>
-                            <p>CMC: {this.props.cmc}</p>
-                            <p>USD: {this.state.priceToUse}</p>
-                            <p>Commander: {this.props.legalities.commander} Modern: {this.props.legalities.modern} Standard: {this.props.legalities.standard}</p>
-                        </div>
+                        <CardDetails cmc={this.props.cmc} prices={this.props.prices} legalities={this.props.legalities} />
                     }
                     {/* Oracle text */}
                     {this.state.selectedIndex !== 2 ? '' :
-                        <p style={{ textAlign: 'left' }}>{this.props.oracle_text}</p>
+                        <CardOracleText oracle_text={this.props.oracle_text} />
                     }
                     {/* Flavor text */}
                     {this.state.selectedIndex !== 3 || this.props.flavor_text === undefined ? '' :
-                        <p style={{ textAlign: 'left' }}>{this.props.flavor_text}</p>
+                        <CardFlavorText flavor_text={this.props.flavor_text} />
                     }
                     {/* Rulings */}
-                    {this.state.selectedIndex === 4 && this.state.rulings !== undefined && this.state.rulings.length > 0 ? this.state.rulings.map((rule, index) => (
-                        <p key={`${rule.id}-${index}`} style={{ textAlign: 'left' }}>{rule.comment}</p>
-                    )) : ''}
+                    {this.state.selectedIndex === 4 && this.state.rulings !== undefined && this.state.rulings.length > 0 ?
+                        <CardRules rulings={this.state.rulings} />
+                        : ''}
                 </Box>
             </div>
         )

@@ -1,11 +1,11 @@
 import { Alert, Button, CircularProgress, Divider, Grid, Pagination, Snackbar } from '@mui/material';
 import React, { Component } from 'react'
-import AutocompleteName from './AutocompleteName';
-import AutocompleteWithUrl from './AutocompleteWithUrl';
-import Card from './Card';
-import ColorSelector, { colors } from './ColorSelector';
-import FormatSelector from './FormatSelector';
-import IntegerComparisonSelector from './IntegerComparisonSelector';
+import AutocompleteName from './AutoComplete/AutocompleteName';
+import AutocompleteWithUrl from './AutoComplete/AutocompleteWithUrl';
+import Card from './Card/Card';
+import ColorSelector, { colors } from './Selectors/ColorSelector';
+import FormatSelector from './Selectors/FormatSelector';
+import IntegerComparisonSelector from './Selectors/IntegerComparisonSelector';
 import SearchInput from './SearchInput';
 import { StyledPaper } from './StyledPaper';
 
