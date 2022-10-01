@@ -8,6 +8,7 @@ import FormatSelector from './Selectors/FormatSelector';
 import IntegerComparisonSelector from './Selectors/IntegerComparisonSelector';
 import SearchInput from './SearchInput';
 import { StyledPaper } from './StyledPaper';
+import OrderSelector from './Selectors/OrderSelector';
 
 const dividerStyle = {
     margin: '15px'
@@ -31,7 +32,8 @@ export default class CardSearch extends Component {
             nameText: props.searchText,
             creatureText: props.creatureText,
             keywordText: props.keywordText,
-            format: props.format
+            format: props.format,
+            order: props.order
         }
         this.search = this.search.bind(this);
         this.containsTextChanged = this.containsTextChanged.bind(this);
@@ -41,6 +43,7 @@ export default class CardSearch extends Component {
         this.powerChanged = this.powerChanged.bind(this);
         this.toughChanged = this.toughChanged.bind(this);
         this.formatChanged = this.formatChanged.bind(this);
+        this.orderChanged = this.orderChanged.bind(this);
         this.generateQuery = this.generateQuery.bind(this);
         this.handleNotificationClose = this.handleNotificationClose.bind(this);
         this.loadNextPage = this.loadNextPage.bind(this);
@@ -72,12 +75,12 @@ export default class CardSearch extends Component {
             searchText: event.target.value
         })
     }
-    creatureTextChanged(value){
+    creatureTextChanged(value) {
         this.setState({
             creatureText: value
         })
     }
-    keywordTextChanged(value){
+    keywordTextChanged(value) {
         this.setState({
             keywordText: value
         })
@@ -85,6 +88,11 @@ export default class CardSearch extends Component {
     formatChanged(format) {
         this.setState({
             format: format
+        })
+    }
+    orderChanged(order) {
+        this.setState({
+            order: order
         })
     }
     handleNotificationClose() {
@@ -135,7 +143,7 @@ export default class CardSearch extends Component {
     }
 
     generateQuery() {
-        let query = 'https://api.scryfall.com/cards/search?q=';
+        let query = `https://api.scryfall.com/cards/search?order=${this.state.order}&q=`;
         let hasOthers = false;
         // paramater for searching cards that contain the given name text in the name
         if (this.state.nameText !== '' && this.state.nameText !== undefined) {
@@ -201,6 +209,8 @@ export default class CardSearch extends Component {
 
                 <IntegerComparisonSelector label='Power' handleChanged={this.powerChanged} equality='>' num='3' />
                 <IntegerComparisonSelector label='Toughness' handleChanged={this.toughChanged} equality='' num='' />
+
+                <OrderSelector label="Order" handleChanged={this.orderChanged} order={this.state.order} />
 
                 <Button variant='contained' onClick={this.search} style={{ margin: '30px' }}>Search!</Button>
 
