@@ -64,7 +64,7 @@ export default class Card extends Component {
                     </Box>
                     {/* Details about card (i.e. cmc, amount, legalities) */}
                     {this.state.selectedIndex !== 1 ? '' :
-                        <CardDetails cmc={this.props.cmc} prices={this.props.prices} legalities={this.props.legalities} />
+                        <CardDetails cmc={this.props.cmc} prices={this.props.prices} purchase_uris={this.props.purchase_uris} legalities={this.props.legalities} />
                     }
                     {/* Oracle text */}
                     {this.state.selectedIndex !== 2 ? '' :

@@ -234,7 +234,7 @@ export default class CardSearch extends Component {
                     {(this.state.cardData == null) ? '' : this.state.cardData.map((card) => (
                         <StyledPaper key={card.id} elevation={10} style={{ margin: '5px' }}>
                             <Card id={card.id} name={card.name} oracle_text={card.oracle_text} flavor_text={card.flavor_text} image_uris={card.image_uris}
-                                cmc={card.cmc} color_identity={card.color_identity} legalities={card.legalities} prices={card.prices} />
+                                cmc={card.cmc} color_identity={card.color_identity} legalities={card.legalities} prices={card.prices} purchase_uris={card.purchase_uris} />
                         </StyledPaper>
                     ))}
                 </Grid>
