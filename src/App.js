@@ -16,7 +16,7 @@ function App() {
       <header className="App-header">
         <ThemeProvider theme={darkTheme}>
           <CssBaseline />
-          <CardSearch color={['r']} power='>3' order='name' />
+          <CardSearch color={['r']} order='name' />
         </ThemeProvider>
       </header>
     </div>

@@ -1,4 +1,4 @@
-import { Alert, Button, CircularProgress, Divider, Grid, Pagination, Snackbar } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Button, CircularProgress, Divider, Grid, Pagination, Snackbar } from '@mui/material';
 import React, { Component } from 'react'
 import AutocompleteName from './AutoComplete/AutocompleteName';
 import AutocompleteWithUrl from './AutoComplete/AutocompleteWithUrl';
@@ -9,6 +9,7 @@ import IntegerComparisonSelector from './Selectors/IntegerComparisonSelector';
 import SearchInput from './SearchInput';
 import { StyledPaper } from './StyledPaper';
 import OrderSelector from './Selectors/OrderSelector';
+import { ExpandMore } from '@mui/icons-material';
 
 const dividerStyle = {
     margin: '15px'
@@ -200,19 +201,25 @@ export default class CardSearch extends Component {
 
                 <AutocompleteName searchTextChanged={this.nameTextChanged} label='Name' />
                 <SearchInput searchTextChanged={this.containsTextChanged} label='Contains' />
-                <AutocompleteWithUrl searchTextChanged={this.creatureTextChanged} label='Creature Types' url='https://api.scryfall.com/catalog/creature-types' />
-                <AutocompleteWithUrl searchTextChanged={this.keywordTextChanged} label='Keyword Abilities' url='https://api.scryfall.com/catalog/keyword-abilities' />
-
-                <FormatSelector label='Format' handleChanged={this.formatChanged} format='' />
 
                 <ColorSelector colorChanged={this.colorChanged} color={this.state.color} />
 
-                <IntegerComparisonSelector label='Power' handleChanged={this.powerChanged} equality='>' num='3' />
-                <IntegerComparisonSelector label='Toughness' handleChanged={this.toughChanged} equality='' num='' />
-
                 <OrderSelector label="Order" handleChanged={this.orderChanged} order={this.state.order} />
 
-                <Button variant='contained' onClick={this.search} style={{ margin: '30px' }}>Search!</Button>
+                <Accordion style={{backgroundColor: 'rgb(25 31 54 / 46%)', marginTop: '15px'}}>
+                    <AccordionSummary expandIcon={<ExpandMore />}>
+                        Advanced Options
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <AutocompleteWithUrl searchTextChanged={this.creatureTextChanged} label='Creature Types' url='https://api.scryfall.com/catalog/creature-types' />
+                        <AutocompleteWithUrl searchTextChanged={this.keywordTextChanged} label='Keyword Abilities' url='https://api.scryfall.com/catalog/keyword-abilities' />
+                        <FormatSelector label='Format' handleChanged={this.formatChanged} format='' />
+                        <IntegerComparisonSelector label='Power' handleChanged={this.powerChanged} equality='' num='' />
+                        <IntegerComparisonSelector label='Toughness' handleChanged={this.toughChanged} equality='' num='' />
+                    </AccordionDetails>
+                </Accordion>
+
+                <Button variant='contained' onClick={this.search} style={{ marginTop: '15px', width: '100%' }}>Search!</Button>
 
                 <Divider style={dividerStyle} />
 
