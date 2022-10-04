@@ -33,6 +33,7 @@ export default class CardSearch extends Component {
             nameText: props.searchText,
             creatureText: props.creatureText,
             keywordText: props.keywordText,
+            artistText: props.artistText,
             format: props.format,
             order: props.order
         }
@@ -50,6 +51,7 @@ export default class CardSearch extends Component {
         this.loadNextPage = this.loadNextPage.bind(this);
         this.getSearchResults = this.getSearchResults.bind(this);
         this.keywordTextChanged = this.keywordTextChanged.bind(this);
+        this.artistTextChanged = this.artistTextChanged.bind(this);
     }
     colorChanged(event) {
         this.setState({
@@ -84,6 +86,11 @@ export default class CardSearch extends Component {
     keywordTextChanged(value) {
         this.setState({
             keywordText: value
+        })
+    }
+    artistTextChanged(value) {
+        this.setState({
+            artistText: value
         })
     }
     formatChanged(format) {
@@ -185,7 +192,12 @@ export default class CardSearch extends Component {
         }
         // adds keyword ability parameter
         if (this.state.keywordText !== '' && this.state.keywordText !== undefined) {
-            query += (hasOthers ? '+' : '') + encodeURIComponent('keyword:' + this.state.keywordText);
+            query += (hasOthers ? '+' : '') + encodeURIComponent('keyword:') + '"' + this.state.keywordText + '"';
+            hasOthers = true;
+        }
+        // adds artist name parameter
+        if (this.state.artistText !== '' && this.state.artistText !== undefined) {
+            query += (hasOthers ? '+' : '') + encodeURIComponent('artist:') + '"' + this.state.artistText + '"';
             hasOthers = true;
         }
         console.log(query);
@@ -213,6 +225,7 @@ export default class CardSearch extends Component {
                     <AccordionDetails>
                         <AutocompleteWithUrl searchTextChanged={this.creatureTextChanged} label='Creature Types' url='https://api.scryfall.com/catalog/creature-types' />
                         <AutocompleteWithUrl searchTextChanged={this.keywordTextChanged} label='Keyword Abilities' url='https://api.scryfall.com/catalog/keyword-abilities' />
+                        <AutocompleteWithUrl searchTextChanged={this.artistTextChanged} label='Artists' url='https://api.scryfall.com/catalog/artist-names' />
                         <FormatSelector label='Format' handleChanged={this.formatChanged} format='' />
                         <IntegerComparisonSelector label='Power' handleChanged={this.powerChanged} equality='' num='' />
                         <IntegerComparisonSelector label='Toughness' handleChanged={this.toughChanged} equality='' num='' />
