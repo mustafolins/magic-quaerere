@@ -55,7 +55,7 @@ export default class Card extends Component {
                 </StyledPaper>
                 <Box sx={{ width: '100%' }}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                        <Tabs value={this.state.selectedIndex} onChange={this.handleTabChange} variant='scrollable' scrollButtons='auto' allowScrollButtonsMobile>
+                        <Tabs value={this.state.selectedIndex} onChange={this.handleTabChange} textColor={'secondary'} indicatorColor={'secondary'} variant='scrollable' scrollButtons='auto' allowScrollButtonsMobile>
                             <Tab label='Details' value={1} />
                             <Tab label='Oracle Text' value={2} />
                             <Tab label='Flavor Text' value={3} disabled={this.props.flavor_text === undefined} />

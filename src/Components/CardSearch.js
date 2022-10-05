@@ -236,7 +236,7 @@ export default class CardSearch extends Component {
 
                 <Divider style={dividerStyle} />
 
-                {this.state.totalCards > 0 ? <Pagination count={Math.ceil(this.state.totalCards / 175)} onChange={this.loadNextPage} page={this.state.currentPage} /> : ''}
+                {this.state.totalCards > 0 ? <Pagination color='primary' count={Math.ceil(this.state.totalCards / 175)} onChange={this.loadNextPage} page={this.state.currentPage} /> : ''}
 
                 {/* Show progress wheel if retrieving results */}
                 {(this.state.isSearching) ? <CircularProgress /> : ''}
@@ -259,7 +259,7 @@ export default class CardSearch extends Component {
                     ))}
                 </Grid>
 
-                {this.state.totalCards > 0 ? <Pagination count={Math.ceil(this.state.totalCards / 175)} onChange={this.loadNextPage} page={this.state.currentPage} /> : ''}
+                {this.state.totalCards > 0 ? <Pagination color='primary' count={Math.ceil(this.state.totalCards / 175)} onChange={this.loadNextPage} page={this.state.currentPage} /> : ''}
             </div>
         )
     }

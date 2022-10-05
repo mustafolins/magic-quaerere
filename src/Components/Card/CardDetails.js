@@ -14,7 +14,7 @@ export default class CardDetails extends Component {
                         .filter((kv) => kv[1] !== undefined && kv[1] !== null)
                         .map((kv, index) => (
                             <p key={index}>
-                                <Link href={kv[1]} underline='hover' target='_blank' rel='noreferrer'>{`Purchase on ${kv[0]}`}</Link>
+                                <Link href={kv[1]} color={'secondary'} underline='hover' target='_blank' rel='noreferrer'>{`Purchase on ${kv[0]}`}</Link>
                             </p>
                         ))
                     : ''}
