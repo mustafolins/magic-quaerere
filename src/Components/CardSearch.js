@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary, Alert, Button, CircularProgress, Divider, Grid, Pagination, Snackbar } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Button, CircularProgress, Divider, Grid, Link, Pagination, Snackbar } from '@mui/material';
 import React, { Component } from 'react'
 import AutocompleteName from './AutoComplete/AutocompleteName';
 import AutocompleteWithUrl from './AutoComplete/AutocompleteWithUrl';
@@ -218,7 +218,7 @@ export default class CardSearch extends Component {
 
                 <OrderSelector label="Order" handleChanged={this.orderChanged} order={this.state.order} />
 
-                <Accordion style={{backgroundColor: 'rgb(25 31 54 / 46%)', marginTop: '15px'}}>
+                <Accordion style={{ backgroundColor: 'rgb(25 31 54 / 46%)', marginTop: '15px' }}>
                     <AccordionSummary expandIcon={<ExpandMore />}>
                         Advanced Options
                     </AccordionSummary>
@@ -260,6 +260,11 @@ export default class CardSearch extends Component {
                 </Grid>
 
                 {this.state.totalCards > 0 ? <Pagination color='primary' count={Math.ceil(this.state.totalCards / 175)} onChange={this.loadNextPage} page={this.state.currentPage} /> : ''}
+
+                <p style={{fontStyle: 'italic'}}>
+                    Background artwork created by Luke Wells.  For more fabulous artwork check out 
+                    <Link href='https://www.lukewellsart.com/' underline='hover' target='_blank' rel='noreferrer'> his site</Link>.
+                </p>
             </div>
         )
     }
