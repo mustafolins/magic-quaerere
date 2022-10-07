@@ -33,6 +33,7 @@
   .App-header {
     background-color: #282c34;
     background-image: url("https://cdnb.artstation.com/p/assets/images/images/054/289/415/large/luke-wells-aspect-of-the-wild-luke-wells.jpg?1664207380");
+    background-position: top left;
     background-repeat: no-repeat;
     background-size: 100vh;
     min-height: 100vh;
