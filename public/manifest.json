@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Magic Quaerere",
+  "name": "Magic Quaerere - A Magic The Gathering Card Search Tool",
   "icons": [
     {
       "src": "favicon.ico",
