@@ -10,6 +10,7 @@ import SearchInput from './SearchInput';
 import { StyledPaper } from './StyledPaper';
 import OrderSelector from './Selectors/OrderSelector';
 import { ExpandMore } from '@mui/icons-material';
+import MultifacedCard from './Card/MultifacedCard';
 
 const dividerStyle = {
     margin: '15px'
@@ -252,17 +253,13 @@ export default class CardSearch extends Component {
                 {/* Display cards in a grid */}
                 <Grid container style={{ justifyContent: 'center' }}>
                     {(this.state.cardData == null) ? '' : this.state.cardData.map((card) => (
+                        // check if card is multifaced
                         card.card_faces === undefined ?
                             <StyledPaper key={card.id} elevation={10} style={{ margin: '5px' }}>
                                 <Card id={card.id} name={card.name} oracle_text={card.oracle_text} flavor_text={card.flavor_text} image_uris={card.image_uris}
                                     cmc={card.cmc} color_identity={card.color_identity} legalities={card.legalities} prices={card.prices} purchase_uris={card.purchase_uris} />
                             </StyledPaper> :
-                            card.card_faces.map((multiFaceCard, index) => (
-                                <StyledPaper key={multiFaceCard.id + '-' + index} elevation={10} style={{ margin: '5px' }}>
-                                    <Card id={card.id} name={card.name} oracle_text={multiFaceCard.oracle_text} flavor_text={multiFaceCard.flavor_text} image_uris={multiFaceCard.image_uris}
-                                        cmc={multiFaceCard.cmc} color_identity={multiFaceCard.color_identity} legalities={card.legalities} prices={card.prices} purchase_uris={card.purchase_uris} />
-                                </StyledPaper>
-                            ))
+                            <MultifacedCard key={card.id} card={card} card_faces={card.card_faces} />
                     ))}
                 </Grid>
 
