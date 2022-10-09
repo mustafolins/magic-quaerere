@@ -252,17 +252,24 @@ export default class CardSearch extends Component {
                 {/* Display cards in a grid */}
                 <Grid container style={{ justifyContent: 'center' }}>
                     {(this.state.cardData == null) ? '' : this.state.cardData.map((card) => (
-                        <StyledPaper key={card.id} elevation={10} style={{ margin: '5px' }}>
-                            <Card id={card.id} name={card.name} oracle_text={card.oracle_text} flavor_text={card.flavor_text} image_uris={card.image_uris}
-                                cmc={card.cmc} color_identity={card.color_identity} legalities={card.legalities} prices={card.prices} purchase_uris={card.purchase_uris} />
-                        </StyledPaper>
+                        card.card_faces === undefined ?
+                            <StyledPaper key={card.id} elevation={10} style={{ margin: '5px' }}>
+                                <Card id={card.id} name={card.name} oracle_text={card.oracle_text} flavor_text={card.flavor_text} image_uris={card.image_uris}
+                                    cmc={card.cmc} color_identity={card.color_identity} legalities={card.legalities} prices={card.prices} purchase_uris={card.purchase_uris} />
+                            </StyledPaper> :
+                            card.card_faces.map((multiFaceCard, index) => (
+                                <StyledPaper key={multiFaceCard.id + '-' + index} elevation={10} style={{ margin: '5px' }}>
+                                    <Card id={card.id} name={card.name} oracle_text={multiFaceCard.oracle_text} flavor_text={multiFaceCard.flavor_text} image_uris={multiFaceCard.image_uris}
+                                        cmc={multiFaceCard.cmc} color_identity={multiFaceCard.color_identity} legalities={card.legalities} prices={card.prices} purchase_uris={card.purchase_uris} />
+                                </StyledPaper>
+                            ))
                     ))}
                 </Grid>
 
                 {this.state.totalCards > 0 ? <Pagination color='primary' count={Math.ceil(this.state.totalCards / 175)} onChange={this.loadNextPage} page={this.state.currentPage} /> : ''}
 
-                <p style={{fontStyle: 'italic'}}>
-                    Background artwork created by Luke Wells.  For more fabulous artwork check out 
+                <p style={{ fontStyle: 'italic' }}>
+                    Background artwork created by Luke Wells.  For more fabulous artwork check out
                     <Link href='https://www.lukewellsart.com/' underline='hover' target='_blank' rel='noreferrer'> his site</Link>.
                 </p>
             </div>
