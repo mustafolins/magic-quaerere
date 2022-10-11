@@ -12,6 +12,8 @@ import OrderSelector from './Selectors/OrderSelector';
 import { ExpandMore } from '@mui/icons-material';
 import MultifacedCard from './Card/MultifacedCard';
 
+const queryString = require('query-string');
+
 const dividerStyle = {
     margin: '15px'
 }
@@ -31,7 +33,7 @@ export default class CardSearch extends Component {
             power: props.power,
             toughness: props.toughness,
             searchText: props.searchText,
-            nameText: props.searchText,
+            nameText: props.nameText,
             creatureText: props.creatureText,
             keywordText: props.keywordText,
             artistText: props.artistText,
@@ -53,6 +55,15 @@ export default class CardSearch extends Component {
         this.getSearchResults = this.getSearchResults.bind(this);
         this.keywordTextChanged = this.keywordTextChanged.bind(this);
         this.artistTextChanged = this.artistTextChanged.bind(this);
+    }
+    componentDidMount() {
+        // if state has searchable elements
+        if (this.state.color.length > 0 || this.state.power || this.state.toughness || this.state.searchText || this.state.nameText !== ''
+            || this.state.creatureText !== '' || this.state.keywordText !== '' || this.state.artistText !== '' || this.state.format !== '') {
+            // generate search query and then get the results
+            let query = this.generateQuery();
+            this.getSearchResults(query, false);
+        }
     }
     colorChanged(event) {
         this.setState({
@@ -109,6 +120,11 @@ export default class CardSearch extends Component {
             showCardNotification: false
         })
     }
+    /**
+     * Loads the given page.
+     * @param {Event} event The event that triggered this function.
+     * @param {Number} page The number that was clicked on the pagination element.
+     */
     loadNextPage(event, page) {
         this.setState({
             currentPage: page
@@ -117,14 +133,75 @@ export default class CardSearch extends Component {
         let pageQuery = this.state.nextPage
         this.getSearchResults(pageQuery.replace(/(page=)\d*/, `page=${page}`), true)
     }
+    /**
+     * Searches using the current state.
+     */
     search() {
-        this.setState({
-            currentPage: 1
-        })
-
-        let query = this.generateQuery();
-        this.getSearchResults(query, false);
+        let tempObj = {}
+        if (this.state.color.length > 0) {
+            tempObj.color = this.state.color
+        }
+        if (this.state.power !== "" && this.state.power !== undefined) {
+            tempObj.power = this.state.power
+        }
+        if (this.state.toughness !== "" && this.state.toughness !== undefined) {
+            tempObj.toughness = this.state.toughness
+        }
+        if (this.state.searchText !== "" && this.state.searchText !== undefined) {
+            tempObj.searchText = this.state.searchText
+        }
+        if (this.state.nameText !== "" && this.state.nameText !== undefined) {
+            tempObj.nameText = this.state.nameText
+        }
+        if (this.state.creatureText !== "" && this.state.creatureText !== undefined) {
+            tempObj.creatureText = this.state.creatureText
+        }
+        if (this.state.keywordText !== "" && this.state.keywordText !== undefined) {
+            tempObj.keywordText = this.state.keywordText
+        }
+        if (this.state.artistText !== "" && this.state.artistText !== undefined) {
+            tempObj.artistText = this.state.artistText
+        }
+        if (this.state.format !== "" && this.state.format !== undefined) {
+            tempObj.format = this.state.format
+        }
+        if (this.state.order !== "" && this.state.order !== undefined) {
+            tempObj.order = this.state.order
+        }
+        // set the query params
+        window.location.search = queryString.stringify(
+            tempObj,
+            {
+                arrayFormat: 'index'
+            })
     }
+    /**
+     * Gets the first equality from the given value.
+     * @param {String} value The String to get an equality from.
+     * @returns The first equality in the given value.
+     */
+    getEquality(value) {
+        if (value === undefined || value === null)
+            return ''
+        let matches = value.match(/\D*/)
+        return (matches !== null && matches.length > 0) ? matches[0] : ''
+    }
+    /**
+     * Gets the first number from the given value.
+     * @param {String} value The String to get a number from.
+     * @returns The first number in the given value.
+     */
+    getNum(value) {
+        if (value === undefined || value === null)
+            return ''
+        let matches = value.match(/\d+/)
+        return (matches !== null && matches.length > 0) ? matches[0] : ''
+    }
+    /**
+     * Gets the search results using the given query.
+     * @param {String} query The query URL to get search results from.
+     * @param {Boolean} isFromPagination True if is from pagination, False otherwise.
+     */
     getSearchResults(query, isFromPagination) {
         this.setState({
             isSearching: true,
@@ -148,9 +225,18 @@ export default class CardSearch extends Component {
                     showCardNotification: (data.data === undefined) ? false : data.total_cards > 0 && !isFromPagination,
                     nextPage: (data.data === undefined) ? '' : ((isFromPagination) ? this.state.nextPage : data.next_page)
                 });
+
+                if (!isFromPagination) {
+                    this.setState({
+                        currentPage: 1
+                    })
+                }
             });
     }
-
+    /**
+     * Generates a search query for the scrfall api using the current states.
+     * @returns A String representing the generated query.
+     */
     generateQuery() {
         let query = `https://api.scryfall.com/cards/search?order=${this.state.order}&q=`;
         let hasOthers = false;
@@ -212,24 +298,24 @@ export default class CardSearch extends Component {
 
                 <Divider style={dividerStyle} />
 
-                <AutocompleteName searchTextChanged={this.nameTextChanged} label='Name' />
-                <SearchInput searchTextChanged={this.containsTextChanged} label='Contains' />
+                <AutocompleteName value={this.state.nameText} searchTextChanged={this.nameTextChanged} label='Name' />
+                <SearchInput value={this.state.searchText} searchTextChanged={this.containsTextChanged} label='Contains' />
 
                 <ColorSelector colorChanged={this.colorChanged} color={this.state.color} />
 
-                <OrderSelector label="Order" handleChanged={this.orderChanged} order={this.state.order} />
+                <OrderSelector value={this.state.order} label="Order" handleChanged={this.orderChanged} order={this.state.order} />
 
                 <Accordion style={{ backgroundColor: 'rgb(25 31 54 / 46%)', marginTop: '15px' }}>
                     <AccordionSummary expandIcon={<ExpandMore />}>
                         Advanced Options
                     </AccordionSummary>
                     <AccordionDetails>
-                        <AutocompleteWithUrl searchTextChanged={this.creatureTextChanged} label='Creature Types' url='https://api.scryfall.com/catalog/creature-types' />
-                        <AutocompleteWithUrl searchTextChanged={this.keywordTextChanged} label='Keyword Abilities' url='https://api.scryfall.com/catalog/keyword-abilities' />
-                        <AutocompleteWithUrl searchTextChanged={this.artistTextChanged} label='Artists' url='https://api.scryfall.com/catalog/artist-names' />
-                        <FormatSelector label='Format' handleChanged={this.formatChanged} format='' />
-                        <IntegerComparisonSelector label='Power' handleChanged={this.powerChanged} equality='' num='' />
-                        <IntegerComparisonSelector label='Toughness' handleChanged={this.toughChanged} equality='' num='' />
+                        <AutocompleteWithUrl value={this.state.creatureText} searchTextChanged={this.creatureTextChanged} label='Creature Types' url='https://api.scryfall.com/catalog/creature-types' />
+                        <AutocompleteWithUrl value={this.state.keywordText} searchTextChanged={this.keywordTextChanged} label='Keyword Abilities' url='https://api.scryfall.com/catalog/keyword-abilities' />
+                        <AutocompleteWithUrl value={this.state.artistText} searchTextChanged={this.artistTextChanged} label='Artists' url='https://api.scryfall.com/catalog/artist-names' />
+                        <FormatSelector format={this.state.format} label='Format' handleChanged={this.formatChanged} />
+                        <IntegerComparisonSelector label='Power' handleChanged={this.powerChanged} equality={this.getEquality(this.state.power)} num={this.getNum(this.state.power)} />
+                        <IntegerComparisonSelector label='Toughness' handleChanged={this.toughChanged} equality={this.getEquality(this.state.toughness)} num={this.getNum(this.state.toughness)} />
                     </AccordionDetails>
                 </Accordion>
 

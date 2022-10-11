@@ -56,6 +56,7 @@ export default class AutocompleteName extends Component {
         return (
             <FormControl style={{ margin: '10px', width: '220px' }}>
                 <Autocomplete
+                    value={this.props.value}
                     autoComplete
                     freeSolo
                     options={this.state.possibleOptions}

@@ -5,7 +5,7 @@ export default class SearchInput extends Component {
     render() {
         return (
             <FormControl style={{ margin: '10px' }}>
-                <TextField onChange={this.props.searchTextChanged} label={this.props.label} />
+                <TextField value={this.props.value} onChange={this.props.searchTextChanged} label={this.props.label} />
             </FormControl>
         )
     }

@@ -41,6 +41,7 @@ export default class AutocompleteWithUrl extends Component {
         return (
             <FormControl style={{ margin: '10px', width: '220px' }}>
                 <Autocomplete
+                    value={this.props.value}
                     autoComplete
                     autoSelect
                     freeSolo
